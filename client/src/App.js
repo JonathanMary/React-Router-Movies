@@ -5,7 +5,7 @@ import { Route } from "react-router-dom";
 
 import SavedList from './Movies/SavedList';
 import Movie from './Movies/Movie';
-import MovieList from './Movies/MovieList';
+import MovieCard from './Movies/MovieCard';
 
 export default function App () {
   const [saved, setSaved] = useState([]); // Stretch: the ids of "saved" movies
@@ -19,6 +19,7 @@ export default function App () {
           // Study this response with a breakpoint or log statements
           // and set the response data as the 'movieList' slice of state
           setMovieList(response.data);
+          //console.log("GET: ", response.data);
         })
         .catch(error => {
           console.error('Server Error', error);
@@ -29,18 +30,22 @@ export default function App () {
 
   const addToSavedList = id => {
     // This is stretch. Prevent the same movie from being "saved" more than once
+    console.log("if: ", saved.find(x => x === id))
+    if(saved.find(x => x === id) === (false||undefined)){
+      setSaved(old => [...old, id]);
+    }
   };
 
   return (
     <div>
-      <SavedList list={[ /* This is stretch */]} />
+      <SavedList list={ saved /* This is stretch */} />
 
       <div>
         <Route path={"/movies/:id"} component="Movie" >
-          <Movie />
+          <Movie save={addToSavedList} />
         </Route>
-        <Route exact path={"/"} component="MovieList">
-          <MovieList movies={movieList}/>
+        <Route exact path={"/"} component="MovieCard">
+          <MovieCard movies={movieList} />
         </Route>
       </div>
     </div>
